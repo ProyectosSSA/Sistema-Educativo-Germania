@@ -1,0 +1,45 @@
+[33m30e23f0[m[33m ([m[1;31mdestino/main[m[33m, [m[1;31mdestino/HEAD[m[33m)[m primer commit del proyecto germania
+ BASE_DE_DATOS/schema_colegio_v2_1.sql              |  866 [32m+++++[m
+ FRONTEND/Admin/docenteadmi.html                    |  194 [32m+[m
+ FRONTEND/Admin/instituadmi.html                    |  258 [32m++[m
+ FRONTEND/Admin/matriculadmin.html                  |  292 [32m++[m
+ FRONTEND/Admin/paneladmin.html                     |  464 [32m+++[m
+ FRONTEND/Admin/registrodocente.html                |  243 [32m++[m
+ FRONTEND/Admin/reporte.html                        |  362 [32m++[m
+ FRONTEND/Docente/asistencia-detallada.html         |  297 [32m++[m
+ FRONTEND/Docente/asistencia.html                   |  161 [32m+[m
+ FRONTEND/Docente/configuracion.html                |  169 [32m+[m
+ FRONTEND/Docente/mis-grupos.html                   |  319 [32m++[m
+ FRONTEND/Docente/panelprofesor.html                |  273 [32m++[m
+ FRONTEND/Docente/planilla-notas.html               |  486 [32m+++[m
+ FRONTEND/Docente/reportesprofe.html                |  281 [32m++[m
+ FRONTEND/Estudiante/biblioteca.html                |  237 [32m++[m
+ FRONTEND/Estudiante/calificaciones.html            |  245 [32m++[m
+ FRONTEND/Estudiante/horario.html                   |  384 [32m++[m
+ FRONTEND/Estudiante/inicio-estudiante.html         |  376 [32m++[m
+ FRONTEND/Estudiante/miscursos.html                 |  294 [32m++[m
+ FRONTEND/Login/login.html                          |  149 [32m+[m
+ FRONTEND/Login/recuperar.html                      |  147 [32m+[m
+ FRONTEND/css/app.css                               |   11 [32m+[m
+ FRONTEND/css/inicio-responsive.css                 |   95 [32m+[m
+ FRONTEND/css/portal.css                            |  746 [32m++++[m
+ FRONTEND/css/profesor.css                          |   84 [32m+[m
+ FRONTEND/css/registrodoce.css                      |  375 [32m++[m
+ FRONTEND/css/responsive.css                        |  557 [32m+++[m
+ FRONTEND/css/style.css                             | 3736 [32m++++++++++++++++++++[m
+ FRONTEND/css/variables.css                         |  202 [32m++[m
+ FRONTEND/images/escuela.jpg                        |  Bin [31m0[m -> [32m115543[m bytes
+ FRONTEND/index.html                                |  593 [32m++++[m
+ FRONTEND/js/app.js                                 |   49 [32m+[m
+ FRONTEND/js/auth.js                                |  206 [32m++[m
+ FRONTEND/js/biblioteca.js                          |   60 [32m+[m
+ FRONTEND/js/calificaciones.js                      |   22 [32m+[m
+ FRONTEND/js/horario.js                             |   41 [32m+[m
+ FRONTEND/js/inicio.js                              |   15 [32m+[m
+ FRONTEND/js/main.js                                |  462 [32m+++[m
+ FRONTEND/js/menu.js                                |   25 [32m+[m
+ FRONTEND/js/portal.js                              |   61 [32m+[m
+ FRONTEND/js/registrodoce.js                        |  221 [32m++[m
+ FRONTEND/js/tailwind-config.js                     |   70 [32m+[m
+ .../requerimientos no funcionales (1).md           |  149 [32m+[m
+ 43 files changed, 14277 insertions(+)
