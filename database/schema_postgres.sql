@@ -120,7 +120,8 @@ CREATE TABLE IF NOT EXISTS horario (
     hora_inicio TIME NOT NULL,
     hora_fin TIME NOT NULL,
     aula VARCHAR(20),
-    CONSTRAINT ck_horario_horas CHECK (hora_fin > hora_inicio)
+    CONSTRAINT ck_horario_horas CHECK (hora_fin > hora_inicio),
+    CONSTRAINT uq_horario UNIQUE (id_asignacion, dia_semana, hora_inicio)
 );
 
 CREATE TABLE IF NOT EXISTS actividad (
@@ -129,7 +130,8 @@ CREATE TABLE IF NOT EXISTS actividad (
     titulo VARCHAR(150) NOT NULL,
     descripcion TEXT,
     fecha_entrega DATE NOT NULL,
-    estado VARCHAR(20) NOT NULL DEFAULT 'pendiente'
+    estado VARCHAR(20) NOT NULL DEFAULT 'pendiente',
+    CONSTRAINT uq_actividad UNIQUE (id_asignacion, titulo)
 );
 
 CREATE TABLE IF NOT EXISTS asistencia (
@@ -167,4 +169,81 @@ CREATE TABLE IF NOT EXISTS alerta_ive (
     factor_socioeconomico DECIMAL(4,3) NOT NULL,
     nivel_riesgo VARCHAR(20) NOT NULL CHECK (nivel_riesgo IN ('verde', 'naranja', 'rojo')),
     fecha_calculo TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS ficha_socioeconomica (
+    id_ficha SERIAL PRIMARY KEY,
+    id_estudiante INT NOT NULL UNIQUE REFERENCES estudiante(id_estudiante) ON UPDATE CASCADE ON DELETE CASCADE,
+    distancia_kms DECIMAL(5,2) DEFAULT 0.0,
+    tiempo_desplazamiento_min INT DEFAULT 0,
+    medio_transporte VARCHAR(50) DEFAULT 'Caminata',
+    acceso_transporte_escolar BOOLEAN DEFAULT FALSE,
+    subsidio_alimentacion_pae BOOLEAN DEFAULT TRUE,
+    grupo_sanguineo VARCHAR(5) DEFAULT 'O+',
+    proveedor_eps VARCHAR(100) DEFAULT 'Sanitas Salud',
+    alergias_condiciones TEXT DEFAULT 'Ninguna',
+    contacto_emergencia_nombre VARCHAR(100),
+    contacto_emergencia_telefono VARCHAR(20),
+    direccion_domicilio TEXT,
+    vulnerabilidad_score DECIMAL(4,3) DEFAULT 0.100
+);
+
+CREATE TABLE IF NOT EXISTS excusas (
+    id_excusa SERIAL PRIMARY KEY,
+    id_estudiante INT NOT NULL REFERENCES estudiante(id_estudiante) ON UPDATE CASCADE ON DELETE CASCADE,
+    fecha_inicio DATE NOT NULL,
+    fecha_fin DATE NOT NULL,
+    motivo VARCHAR(50) NOT NULL,
+    descripcion TEXT,
+    estado VARCHAR(20) DEFAULT 'Pendiente',
+    id_usuario_aprobador INT REFERENCES usuario(id_usuario),
+    fecha_solicitud TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS auditoria_notas (
+    id_log SERIAL PRIMARY KEY,
+    id_usuario INT NOT NULL REFERENCES usuario(id_usuario),
+    id_estudiante INT NOT NULL REFERENCES estudiante(id_estudiante),
+    accion VARCHAR(20) NOT NULL,
+    nota_anterior DECIMAL(3,2),
+    nota_nueva DECIMAL(3,2),
+    motivo_cambio VARCHAR(255),
+    timestamp TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS log_actividad (
+    id_log SERIAL PRIMARY KEY,
+    sello_tiempo TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    administrador VARCHAR(100) NOT NULL,
+    modulo VARCHAR(50) NOT NULL,
+    accion VARCHAR(255) NOT NULL,
+    estado VARCHAR(20) NOT NULL DEFAULT 'AUDITADO'
+);
+
+CREATE TABLE IF NOT EXISTS configuracion_usuario (
+    id_config SERIAL PRIMARY KEY,
+    id_usuario INT NOT NULL UNIQUE REFERENCES usuario(id_usuario),
+    umbral_inasistencia_critica DECIMAL(4,1) DEFAULT 15.0,
+    umbral_rendimiento_bajo DECIMAL(3,1) DEFAULT 3.0,
+    notificar_alertas_automaticas SMALLINT DEFAULT 1,
+    firma_digital_url TEXT
+);
+
+CREATE TABLE IF NOT EXISTS salon_espacio (
+    id_salon SERIAL PRIMARY KEY,
+    codigo VARCHAR(20) NOT NULL UNIQUE,
+    nombre VARCHAR(100) NOT NULL,
+    sede_bloque VARCHAR(100) NOT NULL,
+    capacidad INT NOT NULL DEFAULT 35,
+    equipamiento TEXT,
+    estado VARCHAR(30) NOT NULL DEFAULT 'Disponible'
+);
+
+CREATE TABLE IF NOT EXISTS periodo_auditoria (
+    id_auditoria SERIAL PRIMARY KEY,
+    id_periodo INT NOT NULL REFERENCES periodo(id_periodo) ON UPDATE CASCADE ON DELETE RESTRICT,
+    id_usuario INT NOT NULL REFERENCES usuario(id_usuario) ON UPDATE CASCADE ON DELETE RESTRICT,
+    accion VARCHAR(20) NOT NULL,
+    justificacion VARCHAR(255) NOT NULL,
+    fecha_hora TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );

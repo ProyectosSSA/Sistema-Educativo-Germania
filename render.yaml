@@ -1,11 +1,21 @@
+databases:
+  # ================================================================
+  # Base de Datos PostgreSQL Gestionada en Render (Free Tier)
+  # ================================================================
+  - name: germania-db
+    databaseName: germania
+    user: germania_user
+    plan: free
+    region: oregon
+
 services:
   # ================================================================
-  # Servicio Web Flask Autónomo en Render (100% Free, sin BD externa)
+  # Servicio Web Flask en Render conectado a PostgreSQL
   # ================================================================
   - type: web
     name: germania-web
     runtime: python
-    region: ohio
+    region: oregon
     plan: free
     buildCommand: "pip install -r requirements.txt && python init_db.py"
     startCommand: "gunicorn wsgi:app --workers 1 --threads 2 --timeout 120"
@@ -13,8 +23,13 @@ services:
       - key: FLASK_ENV
         value: production
       - key: DB_TYPE
-        value: sqlite
+        value: postgres
+      - key: DATABASE_URL
+        fromDatabase:
+          name: germania-db
+          property: connectionString
       - key: SECRET_KEY
         generateValue: true
       - key: JWT_SECRET_KEY
         generateValue: true
+
