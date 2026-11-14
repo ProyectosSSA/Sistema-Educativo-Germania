@@ -1,0 +1,57 @@
+/* ==========================================================================
+   Germania SAT & SIE - Tema Institucional Data-Light (Anti-Adblock / Offline)
+   ========================================================================== */
+
+:root {
+  --brand-50: #f0fdf4;
+  --brand-100: #dcfce7;
+  --brand-500: #22c55e;
+  --brand-600: #16a34a;
+  --brand-700: #15803d;
+  --brand-800: #166534;
+  --brand-900: #14532d;
+}
+
+/* Colores de Marca Institucional */
+.bg-brand-50 { background-color: var(--brand-50) !important; }
+.bg-brand-100 { background-color: var(--brand-100) !important; }
+.bg-brand-500 { background-color: var(--brand-500) !important; }
+.bg-brand-600 { background-color: var(--brand-600) !important; }
+.bg-brand-700 { background-color: var(--brand-700) !important; }
+.bg-brand-800 { background-color: var(--brand-800) !important; }
+.bg-brand-900 { background-color: var(--brand-900) !important; }
+
+.hover\:bg-brand-50:hover { background-color: var(--brand-50) !important; }
+.hover\:bg-brand-700:hover { background-color: var(--brand-700) !important; }
+.hover\:bg-brand-800:hover { background-color: var(--brand-800) !important; }
+
+.text-brand-100 { color: var(--brand-100) !important; }
+.text-brand-500 { color: var(--brand-500) !important; }
+.text-brand-700 { color: var(--brand-700) !important; }
+.text-brand-900 { color: var(--brand-900) !important; }
+
+.border-brand-500 { border-color: var(--brand-500) !important; }
+
+/* Transparencias modernas para header y tarjetas */
+.bg-white\/10 { background-color: rgba(255, 255, 255, 0.10) !important; }
+.bg-white\/20 { background-color: rgba(255, 255, 255, 0.20) !important; }
+.border-white\/10 { border-color: rgba(255, 255, 255, 0.10) !important; }
+.border-white\/20 { border-color: rgba(255, 255, 255, 0.20) !important; }
+
+/* Tipografía y Layout Resiliente */
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: #f8fafc;
+  color: #1e293b;
+  margin: 0;
+  padding: 0;
+}
+
+/* Indicador de estado pulse */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .5; }
+}
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
