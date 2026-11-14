@@ -34,10 +34,22 @@ def get_db():
             g.db.row_factory = dict_factory
             g.db.execute("PRAGMA foreign_keys = ON;")
         elif db_type == "postgres" and config.get("DATABASE_URL") and HAS_PSYCOPG2:
-            g.db = psycopg2.connect(
-                config["DATABASE_URL"],
-                cursor_factory=RealDictCursor
-            )
+            dsn = config["DATABASE_URL"]
+            try:
+                g.db = psycopg2.connect(
+                    dsn,
+                    cursor_factory=RealDictCursor
+                )
+            except psycopg2.OperationalError as db_err:
+                # Si falló por requerimiento de SSL (común en conexiones de Render)
+                if "ssl" in str(db_err).lower() and "sslmode" not in dsn:
+                    separator = "&" if "?" in dsn else "?"
+                    g.db = psycopg2.connect(
+                        f"{dsn}{separator}sslmode=require",
+                        cursor_factory=RealDictCursor
+                    )
+                else:
+                    raise db_err
         elif db_type == "mysql":
             g.db = pymysql.connect(
                 host=config["DB_HOST"],

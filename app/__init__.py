@@ -1,6 +1,6 @@
 from flask import Flask
 from app.config import CONFIG_MAP
-from app.database import close_db
+from app.database import get_db, close_db
 from app.utils.responses import error_response
 
 
@@ -72,5 +72,31 @@ def create_app(config_name="development"):
             "service": "Germania SIE & SAT API",
             "version": "2.0.0"
         }, 200
+
+    # Auto-inicialización preventiva de la base de datos si las tablas no existen
+    if not app.config.get("TESTING") and not app.config.get("_IS_INITIALIZING_DB"):
+        app.config["_IS_INITIALIZING_DB"] = True
+        with app.app_context():
+            try:
+                db = get_db()
+                cur = db.cursor()
+                try:
+                    cur.execute("SELECT 1 FROM sede LIMIT 1")
+                    cur.fetchone()
+                    cur.close()
+                except Exception:
+                    if hasattr(db, "rollback"):
+                        db.rollback()
+                    try:
+                        cur.close()
+                    except Exception:
+                        pass
+                    close_db()
+                    from init_db import run_init
+                    run_init(app=app)
+            except Exception as e:
+                app.logger.warning(f"[!] Auto-inicialización preventiva de BD omitida o con error: {e}")
+            finally:
+                app.config["_IS_INITIALIZING_DB"] = False
 
     return app

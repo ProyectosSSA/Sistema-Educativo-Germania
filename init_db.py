@@ -6,12 +6,13 @@ from app.db_init_sqlite import init_sqlite_db
 from database.seed_data import get_seed_sql_statements, ESTUDIANTES_META, SALONES_BASE, LOGS_BASE
 
 
-def run_init():
+def run_init(app=None):
     """Inicializa tablas y datos semilla según el motor activo (PostgreSQL, MariaDB, SQLite)."""
-    env = os.getenv("FLASK_ENV", "development")
-    app = create_app(env)
+    if app is None:
+        env = os.getenv("FLASK_ENV", "production")
+        app = create_app(env)
 
-    print(f"[*] Inicializando base de datos para entorno: {env}...")
+    print(f"[*] Inicializando base de datos...")
     try:
         with app.app_context():
             db = get_db()
@@ -256,63 +257,6 @@ def run_init():
                         e = cursor.execute("SELECT id_estudiante FROM estudiante WHERE id_usuario = ?", (uid,)).fetchone()
                         if e:
                             eid = e["id_estudiante"] if isinstance(e, dict) else e[0]
-                            est_mat = 'retirada' if doc == '1065112233' else 'activa'
-                            cursor.execute("""
-                                INSERT OR IGNORE INTO matricula (id_estudiante, id_curso, id_anio, fecha, estado, documentacion_fisica_entregada)
-                                VALUES (?, 1, 1, '2026-01-25', ?, 1)
-                            """, (eid, est_mat))
-
-                            cursor.execute("""
-                                INSERT OR IGNORE INTO ficha_socioeconomica
-                                (id_estudiante, distancia_kms, tiempo_desplazamiento_min, medio_transporte, grupo_sanguineo, proveedor_eps, alergias_condiciones, contacto_emergencia_nombre, contacto_emergencia_telefono, direccion_domicilio, vulnerabilidad_score)
-                                VALUES (?, 7.0, 40, 'Caminata', ?, ?, ?, ?, ?, ?, ?)
-                            """, (eid, gsang, eps, alerg, acud, tel_acud, dir_comp, pesa))
-
-                # Configuración de usuario por defecto para Elena Rivas (id_usuario=5)
-                cursor.execute("""
-                    INSERT OR IGNORE INTO configuracion_usuario (id_usuario, umbral_inasistencia_critica, umbral_rendimiento_bajo, notificar_alertas_automaticas)
-                    VALUES (5, 15.0, 3.0, 1)
-                """)
-
-                cursor.execute("""
-                    INSERT OR IGNORE INTO actividad (id_actividad, id_asignacion, titulo, descripcion, fecha_entrega, estado)
-                    VALUES (1, 1, 'Taller 1: Fracciones y Operaciones Básicas', 'Resolver ejercicios 1 al 15 de la guía pedagógica institucional', '2026-03-15', 'pendiente')
-                """)
-                cursor.execute("""
-                    INSERT OR IGNORE INTO actividad (id_actividad, id_asignacion, titulo, descripcion, fecha_entrega, estado)
-                    VALUES (2, 1, 'Guía 2: Geometría Plana y Áreas', 'Dibujar y calcular área de 5 figuras poligonales en papel milimetrado', '2026-03-22', 'pendiente')
-                """)
-                cursor.execute("""
-                    INSERT OR IGNORE INTO calificacion (id_calificacion, id_estudiante, id_asignacion, id_periodo, nota, id_usuario_registro)
-                    VALUES (1, 1, 1, 1, 4.2, 4)
-                """)
-
-                db.commit()
-                cursor.close()
-                print("[✓] Base de datos SQLite inicializada y sembrada con éxito.")
-
-            close_db()
-    except Exception as e:
-        import traceback
-        traceback.print_exc()
-        print(f"[!] Advertencia durante la inicialización de BD: {e}")
-        print("[!] El despliegue continuará con normalidad.")
-
-
-
-if __name__ == "__main__":
-    run_init()
-                    u = cursor.execute("SELECT id_usuario FROM usuario WHERE documento = ?", (doc,)).fetchone()
-                    if u:
-                        uid = u["id_usuario"] if isinstance(u, dict) else u[0]
-                        cursor.execute("""
-                            INSERT OR IGNORE INTO estudiante (id_usuario, direccion, fecha_nacimiento, puntaje_esa)
-                            VALUES (?, ?, ?, ?)
-                        """, (uid, dir_dom, fnac, pesa))
-                        e = cursor.execute("SELECT id_estudiante FROM estudiante WHERE id_usuario = ?", (uid,)).fetchone()
-                        if e:
-                            eid = e["id_estudiante"] if isinstance(e, dict) else e[0]
-                            # Estado de matrícula: Carlos Rodríguez como 'retirada', los demás 'activa'
                             est_mat = 'retirada' if doc == '1065112233' else 'activa'
                             cursor.execute("""
                                 INSERT OR IGNORE INTO matricula (id_estudiante, id_curso, id_anio, fecha, estado, documentacion_fisica_entregada)
